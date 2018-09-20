@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.house.shop.mapper.GoodsMapper">
+ 
+  <resultMap id="BaseResultMap" type="com.house.shop.pojo.Goods">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="goods_id" jdbcType="INTEGER" property="goodsId" />
+    <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
+    <result column="goods_price" jdbcType="VARCHAR" property="goodsPrice" />
+    <result column="goods_desc" jdbcType="VARCHAR" property="goodsDesc" />
+    <result column="kc_number" jdbcType="VARCHAR" property="kcNumber" />
+    <result column="goods_pic" jdbcType="VARCHAR" property="goodsPic" />
+    <result column="type_id" jdbcType="INTEGER" property="typeId" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+  </resultMap>
+ 
+ 
+ <select id="selectByUserId" parameterType="com.house.shop.pojo.Goods"
+          resultMap="BaseResultMap">
+    select
+    goods_id,goods_name,goods_price,goods_desc,kc_number,goods_pic,type_id,user_id
+    FROM goods
+    where  user_id=#{userId,jdbcType=VARCHAR}
+    
+
+  </select>
+ 
+</mapper>

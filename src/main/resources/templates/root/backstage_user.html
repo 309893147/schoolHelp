@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+<title>index主界面</title>
+
+<link rel="stylesheet" type="text/css" th:href="@{/static/css/root.css}">
+<!-- Bootstrap -->
+<link th:href="@{/static/css/bootstrap.min.css}" rel="stylesheet">
+
+
+<script th:src="@{/static/js/jquery-3.2.1.min.js}"></script>
+<script th:src="@{/static/js/bootstrap.js}"></script>
+
+</head>
+<body>
+	<header class="wow fadeInRight">
+		<img th:src="@{/static/images/xzs.png}" class="img-circle logo"
+			alt="logo" />
+		<div class="desc">校园小助手</div>
+		<br> <br>
+		<h4 class="col-md-offset-10 wel_root">
+			欢迎管理员<span th:text="${session.currentUser.username}"></span>登陆!
+		</h4>
+	</header>
+	<!-- /.container-fluid -->
+
+	<div class="container-fluid">
+		<div class="row ">
+			<!--data-toggle collapse 折叠  ul class =collapse 初始折叠 -->
+			<div class="col-md-2 wow slideInDown" id="left">
+				<a href="#systemSetting" data-toggle="collapse"> <i
+					class="glyphicon glyphicon-cog"></i>后台管理 <span
+					class="pull-right glyphicon glyphicon-chevron-down"></span><br />
+				</a>
+				<!--ul id  和 上面a 标签的id对应 所以能够弹出li -->
+				<ul id="systemSetting"
+					class="nav nav-pills nav-stacked collapse in ">
+					<li><a th:href="@{/root/backstage_user}"><i
+							class="glyphicon glyphicon-user"></i>用户管理</a></li>
+					<li><a th:href="@{/root/backstage_userdetail}"><i
+							class="glyphicon glyphicon-home"></i>地址管理</a></li>
+					<li><a th:href="@{/root/backstage_product}"><i
+							class="glyphicon glyphicon-globe "></i>商品管理</a></li>
+					<li><a th:href="@{/getGoodsType}"><i
+							class="glyphicon glyphicon-globe "></i>类型管理</a></li>
+
+					<li><a th:href="@{/user/login}"><i
+							class="glyphicon glyphicon-off "></i>退出登陆</a></li>
+				</ul>
+				</br>
+
+			</div>
+
+			<!-- 右边界面 -->
+			<!-- 显示表格数据 -->
+			<div class=" col-md-10 publish wow fadeInUp" id="right">
+				<!-- 将数据appendTo tbody 定义id -->
+				<a href="#"><button class="btn btn-success" id="useraddbtn">添加</button></a>
+				<!-- Button trigger modal -->
+				<button type="button" class="btn btn-info"
+					id="user_delete_all_btn">删除</button>
+				<table class="table table-striped" id="user_table">
+					<!--  为了显示方便放在thead标签里面-->
+					<thead>
+						<tr>
+							<th><input type="checkbox" id="check_all" /></th>
+							<th class="col-md-1">id</th>
+							<th class="col-md-1">用户名</th>
+							<th class="col-md-2">密码</th>
+							<th class="col-md-1">邮箱</th>
+							<th class="col-md-2">头像</th>
+							<th class="col-md-1">昵称</th>
+
+							<th class="col-md-4">操作</th>
+						</tr>
+					</thead>
+					<!-- 所有的数据都放在tbody里面 -->
+					<tbody>
+
+					</tbody>
+				</table>
+				<!-- 显示分页信息 -->
+				<div class="row">
+					<!-- 分页文字信息 -->
+					<div class="col-md-6" id="page_info_area"></div>
+					<!-- 分页条信息 -->
+					<div class="col-md-6" id="page_nav_area"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+	</div>
+	<!-- 信息新增模态框 -->
+	<div class="modal fade" id="userAddModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">新增用户信息</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal">
+						<div class="form-group">
+							<label th:for="inputUsername" class="col-sm-2 control-label">用户名</label>
+							<div class="col-sm-10">
+								<input type="text" class="form-control" id="username_add_input"
+									name="username" placeholder="username"> <span
+									class="help-block"></span>
+							</div>
+						</div>
+						<div class="form-group">
+							<label th:for="inputPassword" class="col-sm-2 control-label">密码</label>
+							<div class="col-sm-10">
+								<input type="text" class="form-control" id="password_add_input"
+									name="password" placeholder="password"> <span
+									class="help-block"></span>
+							</div>
+						</div>
+						<div class="form-group">
+							<label th:for="inputEmail" class="col-sm-2 control-label">邮箱</label>
+							<div class="col-sm-10">
+								<input type="text" class="form-control" id="email_add_input"
+									name="email" placeholder="1"> <span class="help-block"></span>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" id="user_save_btn">保存</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 信息新增模态框 -->
+	<div class="modal fade" id="userUpdateModal" tabindex="-1"
+		role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" th:id="myModalLabel">修改用户信息</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal">
+						<div class="form-group">
+							<label th:for="inputUsername" class="col-sm-2 control-label">用户名</label>
+							<div class="col-sm-10">
+								<input type="text" class="form-control"
+									id="username_update_input" name="username"
+									placeholder="username"> <span class="help-block"></span>
+							</div>
+						</div>
+						<div class="form-group">
+							<label th:for="inputPassword" class="col-sm-2 control-label">密码</label>
+							<div class="col-sm-10">
+								<input type="text" class="form-control"
+									id="password_update_input" name="password"
+									placeholder="password"> <span class="help-block"></span>
+							</div>
+						</div>
+						<div class="form-group">
+							<label th:for="inputEmail" class="col-sm-2 control-label">邮箱</label>
+							<div class="col-sm-10">
+								<input type="text" class="form-control" id="email_update_input"
+									name="email" placeholder="1"> <span class="help-block"></span>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" id="user_update_btn">修改</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="col-sm-offset-5">@2018</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		//	totalRecord总记录数,currentPage当前页
+		var totalRecord, currentPage;
+		//页面加载完成以后,直接发送ajax请求要的分页数据
+		$(function() {
+			//去首页
+			to_page(1);
+		})
+		function to_page(pn) {
+			$.ajax({
+				url : "/user/userList",
+				data : "pn=" + pn,
+				type : "GET",
+				//请求成功后的回掉函数 result  时服务器响应给浏览器的数据
+				success : function(result) {
+
+					//1.解析并显示快递数据
+					build_user_table(result);
+					//2.解析并显示分页信息
+					build_page_info(result);
+					//3.解析并显示分页条数据
+					build_page_nav(result);
+				}
+			});
+
+		}
+		//构建快递表格
+		//"extend":{"pageInfo":{"pageNum":1,"pageSize":5,"size":5,"startRow":1,"endRow":5,"total":1002,"pages":201,"list":
+		function build_user_table(result) {
+			//清空table表格  因为跳转之后直接接收数据,页面每没刷新
+			$("#user_table tbody").empty();
+			var user = result.extend.pageInfo.list;
+			//jquer 遍历  function 每次遍历的回掉函数 index索引 item 当前遍历的对象
+
+			$
+					.each(
+							user,
+							function(index, item) {
+								//单选按钮
+								var checkBoxTd = $(
+										"<td><input type='checkbox' class='check_item '/></td>")
+										.addClass("col-md-1");
+								//先添加单元格
+								//用户id
+								var userIdTd = $("<td>").addClass("col-md-1")
+										.append(item.userId);
+								//用户名
+								var userNameTd = $("<td>").addClass("col-md-1")
+										.append(item.username);
+								//密码
+								var passwordTd = $("<td>").addClass("col-md-2")
+										.append(item.password);
+								//邮箱
+								var emailTd = $("<td>").addClass("col-md-1")
+										.append(item.email);
+								//头像
+								var faceImageTd = $("<td>")
+										.addClass("col-md-2");
+								var faceImage = $("<img>").addClass(
+										"img-thumbnail").attr('src',
+										"../static/" + (item.faceImage))
+										.appendTo($(faceImageTd));
+								//昵称
+								var nicknameTd = $("<td>").addClass("col-md-1")
+										.append(item.nickname);
+
+								/*
+								 *<button type="button" class="btn btn-primary btn-sm">
+								<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+								修改
+								</button>
+								<button type="button" class="btn btn-danger btn-sm">
+								删除 <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+								</button>
+								 */
+								//先创建button按钮元素 编辑 addClass方法执行完成后还是返回原来的元素
+								var editBtn = $("<button></button>")
+										.addClass(
+												"btn btn-primary btn-sm edit_btn")
+										.append(
+												$("<span></span>")
+														.addClass(
+																"glyphicon glyphicon-pencil"))
+										.append("编辑");
+								//为编辑按钮添加一个自定义的属性,来表示当前用户的id 是取出来的id
+								editBtn.attr("edit-id", item.userId);
+								var delBtn = $("<button></button>")
+										.addClass(
+												"btn btn-danger btn-sm delete_btn")
+										.append(
+												$("<span></span")
+														.addClass(
+																"glyphicon glyphicon-trash"))
+										.append("删除");
+								//为删除按钮定义一个ID
+								delBtn.attr("delete-id", item.userId);
+								//按钮放在一个单元格中
+								var btnTd = $("<td></td>").append(editBtn)
+										.append(delBtn);
+								//构建要显示快递的tr  append方法执行完成后还是返回原来的元素
+								$("<tr></tr>").append(checkBoxTd).append(
+										userIdTd).append(userNameTd).append(
+										passwordTd).append(emailTd).append(
+										faceImageTd).append(nicknameTd).append(
+										btnTd).appendTo("#user_table tbody");
+							});
+
+		}
+		//"extend":{"pageInfo":{"pageNum":1,"pageSize":5,"size":5,"startRow":1,"endRow":5,"total":1002,"pages":201
+		//构建分页信息
+		function build_page_info(result) {
+			$("#page_info_area").empty();
+
+			$("#page_info_area").append(
+					"当前第 " + result.extend.pageInfo.pageNum + " 页" + " 总 "
+							+ result.extend.pageInfo.pages + " 页" + " 总 "
+							+ result.extend.pageInfo.total + " 条记录");
+			totalRecord = result.extend.pageInfo.total;
+			currentPage = result.extend.pageInfo.pageNum;
+		}
+
+		//构建分页条导航
+		function build_page_nav(result) {
+			//page_nav_area
+			$("#page_nav_area").empty();
+
+			var ul = $("<ul></ul>").addClass("pagination");
+			//构建元素
+			var firstPageLi = $("<li></li>").append(
+					$("<a></a>").append("首页").attr("href", "#"));
+			var prePageLi = $("<li></li>").append(
+					$("<a></a>").append("&laquo;").attr("href", "#"));
+			//如果有前一页显示
+			if (result.extend.pageInfo.hasPreviousPage == false) {
+				firstPageLi.addClass("disabled");
+				prePageLi.addClass("disabled");
+			} else {
+				//为元素添加点击翻页事件
+				//首页
+				firstPageLi.click(function() {
+					to_page(1);
+				});
+				//点击的页
+				prePageLi.click(function() {
+					to_page(result.extend.pageInfo.pageNum - 1);
+				});
+			}
+
+			var nextPageLi = $("<li></li>").append(
+					$("<a></a>").append("&raquo;").attr("href", "#"));
+			var lastPageLi = $("<li></li>").append(
+					$("<a></a>").append("末页").attr("href", "#"));
+			//如果没有下一页 不能点击
+			if (result.extend.pageInfo.hasNextPage == false) {
+				nextPageLi.addClass("disabled");
+				lastPageLi.addClass("disabled");
+			} else {
+				//为元素添加点击翻页事件
+				//最后一页
+				lastPageLi.click(function() {
+					to_page(result.extend.pageInfo.pages);
+				});
+				//下一页
+				nextPageLi.click(function() {
+					to_page(result.extend.pageInfo.pageNum + 1);
+				});
+			}
+			//添加首页和前一页
+			ul.append(firstPageLi).append(prePageLi);
+			var navNum = result.extend.pageInfo.navigatepageNums;
+			//1,2,遍历给ul中添加页码提示
+			$.each(navNum, function(index, item) {
+				var numLi = $("<li></li>").append(
+						$("<a></a>").append(item).attr("href", "#"));
+				//如果当前页码==正在遍历的页码 添加一个标识
+				if (result.extend.pageInfo.pageNum == item) {
+					numLi.addClass("active");
+				}
+				//绑定单击事件
+				numLi.click(function() {
+					to_page(item);
+				})
+				ul.append(numLi);
+			});
+			//添加下一页和末页的提示
+			ul.append(nextPageLi).append(lastPageLi);
+			//所有元素要放在nav标签中
+			var navEle = $("<nav></nav>").append(ul);
+			$("#page_nav_area").append(navEle);
+
+		}
+		//清空表单样式及内容
+		function reset_from(ele) {
+			$(ele)[0].reset();
+			$(ele).find("*").removeClass("has-error has-success");
+			$(ele).find(".help-block").text("");
+		}
+		//单个删除
+		$(document).on("click", ".delete_btn", function() {
+			//1弹出是否确认删除
+			var userId = $(this).parents("tr").find("td:eq(0)").text();
+			var uId = $(this).attr("delete-id");
+			if (confirm("确认删除[" + uId + "]吗？")) {
+				//确认，发送ajax请求删除
+				$.ajax({
+					url : "/user/deleteUser/" + uId,
+					type : "DELETE",
+					success : function(result) {
+						alert(result.msg);
+						//回到本页
+						to_page(currentPage);
+					}
+
+				});
+			}
+
+		});
+
+		//完成全选全不选
+		$("#check_all").click(function() {
+
+			//dom原生的属性用prop 获取属性的值
+			//prop修改和读取原生属性的值
+
+			$(".check_item").prop("checked", $(this).prop("checked"));
+		});
+		//当单选按钮全部点满后 全选按钮也要点亮
+		$(document)
+				.on(
+						"click",
+						".check_item",
+						function() {
+							//判断当前选中的元素是否5个 如果等于 全选满
+							var flag = ($(".check_item:checked").length == $(".check_item").length);
+							$("#check_all").prop("checked", flag);
+						});
+		//点击全部删除,就批量删除
+		$("#user_delete_all_btn").click(
+				function() {
+					var del_idstr = "";
+					$.each($(".check_item:checked"), function() {
+						//组装id字符串
+						del_idstr += $(this).parents("tr").find("td:eq(1)")
+								.text()
+								+ "-";
+					});
+					//去除del_idstr多余的-
+					del_idstr = del_idstr.substring(0, del_idstr.length - 1);
+					if (confirm("确认删除[" + del_idstr + "]吗?")) {
+						//发送ajax请求
+						$.ajax({
+							url : "/user/deleteUser/" + del_idstr,
+							type : "DELETE",
+							success : function(result) {
+								alert(result.msg);
+								to_page(currentPage);
+							}
+
+						});
+
+					}
+				});
+		//用户信息新增模态框
+		$("#useraddbtn").click(function() {
+			//模态框弹出之前 表单重置
+			reset_from("#userAddModal form");
+
+			$("#userAddModal").modal({
+				backdrop : "static",
+			});
+		});
+
+		//校验表单数据
+		function validate_add_form() {
+			//拿到要校验的数据,使用正则表达式
+			var userName = $("#username_add_input").val();
+			//校验快递公司
+			var regUsername = /^[a-zA-Z0-9_-]{2,6}$/;
+			if (!regUsername.test(userName)) {
+
+				//优化校验显示
+				show_validate_msg("#username_add_input", "error",
+						"请输入2-6位字母或者数字");
+
+				return false;
+			} else {
+				show_validate_msg("#username_add_input", "success", "");
+
+			}
+			;
+
+			//校验password_add_input取件码
+			var passWord = $("#password_add_input").val();
+			//校验收件人
+			var regPassword = /^[a-zA-Z0-9_-]{2,26}$/;
+			if (!regPassword.test(passWord)) {
+
+				show_validate_msg("#password_add_input", "error",
+						"请输入2-6位字母或者数字");
+				return false;
+			} else {
+				show_validate_msg("#password_add_input", "success", "");
+			}
+			;
+
+			return true;
+		}
+		//显示校验的提示信息
+		function show_validate_msg(ele, status, msg) {
+			//清除当前元素的检验状态
+			$(ele).parent().removeClass("has-success has-error");
+			$(ele).next("span").text("");
+			if ("success" == status) {
+				$(ele).parent().addClass("has-success");
+				$(ele).next("span").text(msg);
+			} else if ("error" == status) {
+				$(ele).parent().addClass("has-error");
+				$(ele).next("span").text(msg);
+			}
+
+		}
+		//校验收件人是否可用
+		$("#username_add_input").change(
+				function() {
+					//发送ajax请求校验取件码是否可用
+					var username = this.value;
+					$.ajax({
+						url : "/user/checkUsername",
+						data : "username=" + username,
+						type : "POST",
+						success : function(result) {
+							if (result.code == 100) {
+								show_validate_msg("#username_add_input",
+										"success", "用户名可用");
+								$("#user_save_btn").attr("ajax-validate",
+										"success");
+							} else {
+								show_validate_msg("#username_add_input",
+										"error", result.extend.va_msg);
+								$("#user_save_btn").attr("ajax-validate",
+										"error");
+							}
+						}
+					});
+				});
+		$("#user_save_btn")
+				.click(
+						function() {
+							//模态框中填写的表单数据提交给服务器进行保存
+							//发送ajax请求保存快递信息
+							if (!validate_add_form()) {
+
+								return false;
+							}
+							;
+							//1判断之前的ajax收件人校验是否可用
+							//拿到当前按钮 属性值是成功还是失败	 失败就return flase 不进行下面的操作
+							if ($(this).attr("ajax-validate") == "error") {
+								return false;
+							}
+							$
+									.ajax({
+										url : "/user/useradd",
+										type : "POST",
+										data : $("#userAddModal form")
+												.serialize(),
+										success : function(result) {
+											//alert(result.msg);
+											if (result.code == 100) {
+
+												//关闭模态框
+												$("#userAddModal")
+														.modal('hide');
+												//发送ajax请求到最后一页数据即可
+												to_page(totalRecord);
+											} else {
+												//显示失败信息
+												//console.log(result);
+												//有那个字段的失败信息就显示那个字段的
+												if (undefined != result.extend.errorFields.username) {
+													//显示快递公司错误信息
+													show_validate_msg(
+															"#username_add_input",
+															"error",
+															result.extend.errorFields.username);
+												}
+												if (undefined != result.extend.errorFields.password) {
+													//显示快递公司错误信息
+													show_validate_msg(
+															"#password_add_input",
+															"error",
+															result.extend.errorFields.password);
+												}
+
+											}
+
+										}
+
+									});
+
+						});
+		//修改绑定单击事件
+		//1.按钮创建之前就绑定了click,所以绑定不上
+		//2live方法 可以为后来的元素
+		//3.新版本没有live, 使用on替代
+		$(document).on("click", ".edit_btn", function() {
+			//2查出快递信息,显示快递信息
+			getUser($(this).attr("edit-id"));
+
+			//3把快递的id传递给更新按钮
+			$("#user_update_btn").attr("edit-id", $(this).attr("edit-id"));
+			$("#userUpdateModal").modal({
+				backdrop : "static",
+			});
+		});
+		function getUser(id) {
+			$.ajax({
+				url : "/user/updateUser/" + id,
+				type : "GET",
+				success : function(result) {
+					//console.log(result);
+					var userData = result.extend.user;
+					$("#username_update_input").val(userData.username);
+					$("#password_update_input").val(userData.password);
+					$("#email_update_input").val(userData.email);
+
+				}
+
+			});
+		}
+		//点击更新,更新快递信息
+		$("#user_update_btn").click(
+				function() {
+					//拿到要校验的数据,使用正则表达式
+					var userName = $("#username_update_input").val();
+					//校验快递公司
+					var regUsername = /^[a-zA-Z0-9_-]{2,6}$/;
+					if (!regUsername.test(userName)) {
+
+						//优化校验显示
+						show_validate_msg("#username_update_input", "error",
+								"请输入2-6位字母或者数字");
+
+						return false;
+					} else {
+						show_validate_msg("#username_update_input", "success",
+								"");
+
+					}
+					;
+					//校验password_add_input取件码
+					var passWord = $("#password_update_input").val();
+					//校验收件人
+					var regPassword = /^[a-zA-Z0-9_-]{2,26}$/;
+					if (!regPassword.test(passWord)) {
+
+						show_validate_msg("#password_update_input", "error",
+								"请输入2-6位字母或者数字");
+						return false;
+					} else {
+						show_validate_msg("#password_update_input", "success",
+								"");
+					}
+					;
+
+					//2发送ajax请求
+					$.ajax({
+						url : "/user/updateUser/" + $(this).attr("edit-id"),
+						type : "PUT",
+						data : $("#userUpdateModal form").serialize(),
+						success : function(result) {
+
+							alert(result.msg);
+
+							//1关闭对话框
+							$("#userUpdateModal").modal("hide");
+							//2回到本页面
+							to_page(currentPage);
+						}
+					});
+
+				});
+	</script>
+
+
+
+</body>
+</html>

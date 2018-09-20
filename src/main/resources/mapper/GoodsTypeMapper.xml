@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.house.shop.mapper.GoodsTypeMapper" >
+  <resultMap id="BaseResultMap" type="com.house.shop.pojo.GoodsType" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="goods_type_id" property="goodsTypeId" jdbcType="INTEGER" />
+    <result column="goods_type_name" property="goodsTypeName" jdbcType="VARCHAR" />
+    <result column="goods_type_desc" property="goodsTypeDesc" jdbcType="VARCHAR" />
+  </resultMap>
+</mapper>
